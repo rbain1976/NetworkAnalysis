@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIS Network Analysis: San Francisco Urban Accessibility Study</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c5282;
+            --secondary-color: #4299e1;
+            --accent-color: #ed8936;
+            --dark-color: #2d3748;
+            --light-color: #f7fafc;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.7;
+            color: #2d3748;
+            background-color: #f8fafb;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .site-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        
+        .site-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        
+        .author-info {
+            margin-top: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-top: 1.5em;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--secondary-color);
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            margin-top: 30px;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 30px auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            margin-top: 15px;
+            margin-bottom: 25px;
+            color: #4a5568;
+            font-size: 0.95rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .highlight-box {
+            background-color: rgba(66, 153, 225, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        
+        .research-questions {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .research-questions li {
+            position: relative;
+            padding: 15px 15px 15px 60px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .research-questions li:before {
+            content: "Q" counter(question);
+            counter-increment: question;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .method-card {
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        
+        .method-card:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+        }
+        
+        .method-card h3 {
+            margin-top: 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .method-card h3 i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        ol, ul {
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        
+        .conclusion-highlight {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            background-color: var(--dark-color);
+            color: white;
+        }
+        
+        .button-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: var(--box-shadow);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .button-top:hover {
+            opacity: 1;
+        }
+        
+        .reference-list {
+            padding-left: 0;
+            list-style-type: none;
+        }
+        
+        .reference-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 15px;
+        }
+        
+        .reference-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .reference-list li:before {
+            content: "➜";
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .site-title {
+                font-size: 2rem;
+            }
+            
+            .site-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="site-title">GIS Network Analysis</h1>
+            <div class="site-subtitle">San Francisco Urban Accessibility Study</div>
+            <div class="author-info">Roger Bain | GIST 602B Vector Spatial Analysis</div>
+        </div>
+    </header>
+
+    <div class="container">
+    <div class="section">
+        <h2>Problem Statement</h2>
+        <div class="highlight-box">
+            <p>The San Francisco urban area presents unique geographical and infrastructural challenges for accessibility to critical services due to its distinctive topography, dense urban layout, and variable transportation network. This study evaluates the efficiency and coverage of urban service accessibility in San Francisco using GIS network analysis techniques to inform urban planning and resource allocation decisions.</p>
+        </div>
+
+        <h3>Research Questions</h3>
+        <ol class="research-questions" style="counter-reset: question 0;">
+            <li>What are the optimal emergency routes from recreation sites to the nearest hospital facilities in San Francisco?</li>
+            <li>What is the most efficient delivery route for a food service starting from Henry's Hunan Restaurant to reach five customer locations across San Francisco?</li>
+            <li>What percentage of San Francisco's area is within a 5-minute walking distance of a public library?</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Data</h2>
+        
+        <h3><i class="fas fa-map-marked-alt"></i> Study Area</h3>
+        <p>San Francisco is a densely populated coastal city encompassing approximately 47 square miles in northern California, characterized by its iconic hills, bay frontage, and distinctive neighborhoods. The city features a complex urban grid modified by its hilly terrain, creating a challenging environment for transportation network analysis. San Francisco's unique geography combines with its dense urban development to create distinct patterns of accessibility across different regions of the city. As a major metropolitan area with diverse socioeconomic communities, the city provides an excellent case study for urban service accessibility analysis.</p>
+
+        <h3><i class="fas fa-database"></i> Data Description</h3>
+        <p>This analysis utilized the San Francisco transportation network dataset containing detailed street data with travel time attributes for different modes of transportation (driving and walking). Additional datasets include point locations for hospitals, libraries, restaurants (specifically Henry's Hunan Restaurant), recreation sites, and customer delivery locations, all referenced to the San Francisco County boundary.</p>
+
+        <h3><i class="fas fa-location-dot"></i> Study Area Map</h3>
+        <img src="images/location-map.png" alt="San Francisco County Location Map">
+        <p class="image-caption">Figure 1: Location map showing San Francisco County (highlighted in red) within the state of California. The inset map provides a detailed view of San Francisco County, illustrating the geographic context of the study area for the network analyses.</p>
+    </div>
+
+    <div class="section">
+        <h2>Methods</h2>
+        
+        <div class="highlight-box">
+            <h3><i class="fas fa-globe"></i> Projection</h3>
+            <p>For this analysis, the NAD 1983 State Plane California Zone III (EPSG: 2227) projection was used. This projection was selected because it minimizes distortion for the San Francisco region while preserving both distance and area measurements, which is critical for accurate network analysis. As a conformal projection customized for this specific region of California, it provides optimal accuracy for measuring travel distances and times across the San Francisco transportation network, making it ideal for the service area, closest facility, and route optimization analyses conducted in this study.</p>
+        </div>
+        
+        <div class="method-card">
+            <h3><i class="fas fa-hospital"></i> Method #1: Closest Facility Analysis</h3>
+            <p>The Closest Facility network analysis method was employed to identify optimal emergency routes between recreation sites and hospital facilities. This method computes the shortest or fastest paths between origins (incidents - recreation sites shown as purple triangles) and destinations (facilities - hospitals shown as red crosses) across the San Francisco transportation network. For each recreation site, such as Al's Park, McCoppin Square, and Lafayette Park Playground, the analysis identified which hospital could be reached in the minimum travel time, accounting for one-way streets, turn restrictions, and typical travel speeds. The resulting routes (shown as blue lines) reveal critical emergency access patterns and potential gaps in hospital accessibility from public recreation areas across San Francisco's complex urban terrain.</p>
+        </div>
+
+        <div class="method-card">
+            <h3><i class="fas fa-utensils"></i> Method #2: Route Optimization Analysis</h3>
+            <p>Route Optimization analysis was utilized to determine the most efficient delivery sequence from a single restaurant to multiple customer locations. Starting from Henry's Hunan Restaurant (represented by a fork and knife icon) as the depot, the analysis calculated the optimal route to visit five customer locations (shown as red dots) while minimizing total travel time. The resulting blue route forms a logical loop across the city, covering approximately 18 miles with a total travel time of 38 minutes. The method employed a traveling salesman problem (TSP) algorithm that considers one-way streets, turn restrictions, and typical traffic patterns to find the most efficient route sequence. This approach identifies the most time-efficient delivery path through San Francisco's complex street network, particularly important in a city with challenging topography and dense urban development.</p>
+        </div>
+
+        <div class="method-card">
+            <h3><i class="fas fa-book"></i> Method #3: Service Area Analysis</h3>
+            <p>The Service Area network analysis method was applied to evaluate library accessibility by identifying areas within specified walking times of public library facilities. This analysis generated polygons (shown in blue) representing all locations accessible within 5 minutes of walking from each library (blue dots) along the street network. The resulting "spider web" patterns extend outward from the 28 library facilities distributed throughout San Francisco. Unlike simple buffer analysis, service areas follow the actual street network, accounting for connectivity constraints, one-way streets, and walking speeds. The irregular shapes of these service areas reflect San Francisco's varied topography and street patterns, providing a realistic representation of pedestrian accessibility to library services across the city's diverse neighborhoods.</p>
+        </div>
+
+        <h3><i class="fas fa-cogs"></i> Assumptions and Settings</h3>
+        <p>For this analysis, several travel settings and assumptions were applied to ensure realistic results. For the Closest Facility and Route Optimization analyses, a driving travel mode was used with impedance measured in travel time (minutes), assuming typical traffic conditions during daytime hours. One-way restrictions, turn penalties, and standard driving speeds were incorporated on different road classes. For the Service Area analysis, a walking travel mode was applied with a 5-minute cutoff threshold and a standard walking speed of 5 km/h (3 mph). This conservative walking time threshold was selected to identify areas with highly convenient library access, recognizing that longer walking times would increase coverage but might reduce utilization rates. All analyses assumed the transportation network was fully operational without construction detours or temporary closures.</p>
+    </div>
+
+    <div class="section">
+        <h2>Results</h2>
+        
+        <div class="method-card">
+            <h3><i class="fas fa-hospital"></i> Method #1: Closest Facility Analysis</h3>
+            <img src="images/CF.png" alt="Closest Facility Analysis Map">
+            <p class="image-caption">Figure 2: Closest Facility Analysis showing optimal routes from recreation sites (purple triangles) to nearest hospital facilities (red crosses) in San Francisco.</p>
+
+            <p>The Closest Facility analysis revealed significant spatial patterns in emergency accessibility between recreation sites and hospitals in San Francisco. Hospital facilities (red crosses) appear well-distributed throughout central and eastern San Francisco, with fewer facilities in western and southern portions of the city. The analysis identified considerable variation in route length and complexity, with recreation sites like Lafayette Park Playground and Sue Bierman Park Playground in the northeastern portion connected via relatively direct routes, while sites like McCoppin Square, West Portal Playground, and Little Hollywood Community Park in southwestern and western areas showed longer, more complex routing.</p>
+
+            <p>Notable examples include the lengthy route from McCoppin Square to its nearest hospital and the complex path from the Melrose/Detroit Botanical Garden to its closest facility. Route patterns demonstrate the influence of San Francisco's hilly terrain, with paths following major arterial roadways rather than attempting direct paths across topographical barriers, particularly evident in the southern routes from Al's Park and Roosevelt & Henry Stairs. These findings highlight potential gaps in emergency service coverage in the western and southwestern regions of the city where response times from recreation areas would be longer due to greater network distances.</p>
+        </div>
+
+        <div class="method-card">
+            <h3><i class="fas fa-utensils"></i> Method #2: Route Optimization Analysis</h3>
+            <img src="images/RO.png" alt="Route Optimization Analysis Map">
+            <p class="image-caption">Figure 3: Optimized delivery route from Henry's Hunan Restaurant to 5 customer locations in San Francisco.</p>
+
+            <div class="highlight-box">
+                <p><strong>Key Metrics:</strong> 18 miles total distance | 38 minutes total travel time | 5 delivery stops</p>
+            </div>
+
+            <p>The Route Optimization analysis produced an efficient delivery sequence originating from Henry's Hunan Restaurant (indicated by the fork and knife symbol) and servicing five customer locations (red dots) across San Francisco. As clearly shown on the map, the optimized route covers approximately 18 miles with an estimated travel time of 38 minutes. The solution demonstrates an efficient path that minimizes backtracking while providing systematic coverage across various areas of the city, extending from the central area to western, northern, southeastern, and southern neighborhoods.</p>
+
+            <p>The route forms a logical loop that accounts for San Francisco's street network peculiarities and typical traffic patterns. The delivery sequence appears to start eastward from the restaurant, then extends to the northern part of the city, crosses to the western region, moves south, and finally returns toward the eastern section before completing the loop. The optimization algorithm successfully navigated the city's complex transportation network, considering one-way streets, turn restrictions, and varying road speeds to generate a time-efficient delivery sequence. The resulting route demonstrates how network analysis can significantly improve operational efficiency for delivery services, reducing both travel time and distance while maintaining complete coverage of all required stops. The analysis did not incorporate service times at delivery locations or time windows for deliveries, which represents a limitation of this specific implementation.</p>
+        </div>
+
+        <div class="method-card">
+            <h3><i class="fas fa-book"></i> Method #3: Service Area Analysis</h3>
+            <img src="images/SA.png" alt="Service Area Analysis Map">
+            <p class="image-caption">Figure 4: Service Area Analysis showing areas within 5-minute walking distance (blue polygons) of public libraries (blue dots) in San Francisco.</p>
+
+            <div class="highlight-box">
+                <p><strong>Coverage Statistics:</strong> Only 16% of San Francisco's area (7.5 out of 46.87 square miles) is within a 5-minute walk of a public library</p>
+            </div>
+
+            <p>The Service Area analysis revealed that only 16% of San Francisco's total geographic area (approximately 7.5 square miles of the city's 46.87 square miles) lies within a 5-minute walking distance of a public library. The service areas exhibit a distinctive "spider web" pattern extending along walkable streets from the 28 library facilities (blue dots) distributed throughout the city. As visible on the map, despite the relatively even distribution of libraries, significant gaps exist between service areas, particularly in the western and southern portions of San Francisco.</p>
+
+            <p>The map clearly illustrates how the city's hilly terrain and street network patterns significantly influence accessibility, creating irregular service area shapes that follow the street grid where present but become more constrained in areas with limited connectivity. The blue polygons representing 5-minute walking distances are notably smaller in areas with steep terrain or irregular street patterns. Library service areas appear somewhat more concentrated in the northeastern portion of the city, corresponding to higher-density neighborhoods, with larger gaps in the western and southern regions. Several libraries in the central and eastern portions show overlapping service areas, indicating some redundancy in coverage, while large sections of the western and southwestern neighborhoods remain outside any 5-minute walking zone. The limited coverage suggests that the vast majority of San Francisco residents cannot walk to a library within 5 minutes, highlighting opportunities for improved accessibility through strategic planning of new facilities, mobile services, or enhanced transit connections to existing libraries.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Conclusion</h2>
+        
+        <div class="highlight-box">
+            <p>This comprehensive network analysis of San Francisco's urban accessibility provides valuable insights regarding emergency services, delivery optimization, and public resource accessibility across the city's unique geographical landscape.</p>
+        </div>
+        
+        <p>The <span class="conclusion-highlight">Closest Facility analysis</span> identified potential gaps in hospital coverage for recreation sites, particularly in western and southwestern areas where emergency routes were longer and more complex. This suggests the need for strategic positioning of emergency response resources or potential consideration of additional medical facilities in these underserved regions. The <span class="conclusion-highlight">Route Optimization analysis</span> demonstrated the practical value of network analysis for delivery services, generating an efficient 38-minute route covering 18 miles to service five customer locations. This optimization approach offers significant operational benefits for delivery-based businesses operating in complex urban environments. Finally, the <span class="conclusion-highlight">Service Area analysis</span> revealed that only 16% of San Francisco's area is within a convenient 5-minute walk of a public library, highlighting substantial opportunities for improving pedestrian accessibility to these important community resources.</p>
+
+        <p>Together, these analyses address the three research questions posed at the outset, providing quantifiable insights into urban service accessibility patterns across San Francisco. The results demonstrate how San Francisco's distinctive topography and street network create variable accessibility patterns that must be considered in urban planning and resource allocation decisions. The eastern and central portions of the city generally show better service coverage and more direct routing options, while western and southern regions frequently exhibit accessibility challenges across all three service types examined. These findings suggest opportunities for targeted infrastructure improvements, strategic resource placement, and enhanced transportation connections to improve urban service accessibility throughout San Francisco.</p>
+
+        <h3><i class="fas fa-exclamation-triangle"></i> Limitations</h3>
+        <p>Several limitations should be considered when interpreting these results:</p>
+        <ul>
+            <li>The analyses relied on typical traffic conditions and standard travel speeds, not accounting for time-of-day variations or seasonal traffic patterns that could significantly affect actual travel times.</li>
+            <li>The analyses did not incorporate service capacity limitations at facilities or time windows for service availability.</li>
+            <li>The walking threshold of 5 minutes for library access is relatively conservative; many residents may be willing to walk 10-15 minutes, which would significantly increase coverage.</li>
+            <li>The analyses focused primarily on geographic coverage rather than population coverage, potentially underestimating the percentage of residents served by existing facilities.</li>
+            <li>Alternative transportation modes beyond driving and walking (such as public transit, cycling, or rideshare services) were not incorporated into the accessibility evaluations.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>References</h2>
+        <ul class="reference-list">
+            <li>ESRI. (2023). ArcGIS Pro Network Analyst documentation. Environmental Systems Research Institute, Inc.</li>
+            <li>San Francisco Department of Public Works. (2023). San Francisco transportation network data.</li>
+            <li>San Francisco Public Library. (2023). Branch locations and services data.</li>
+            <li>San Francisco Department of Public Health. (2023). Hospital facilities data.</li>
+            <li>OpenStreetMap contributors. (2023). San Francisco street network and points of interest data.</li>
+            <li>U.S. Census Bureau. (2023). San Francisco County boundary and demographic data.</li>
+        </ul>
+    </div>
+    
+    <footer>
+        <p>© 2023 Roger Bain | GIST 602B Vector Spatial Analysis</p>
+    </footer>
+    
+    <a href="#" class="button-top" title="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+    
+    <script>
+        // Simple script to enhance interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Show/hide back to top button based on scroll position
+            const buttonTop = document.querySelector('.button-top');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    buttonTop.style.display = 'flex';
+                } else {
+                    buttonTop.style.display = 'none';
+                }
+            });
+            
+            // Initially hide the button
+            buttonTop.style.display = 'none';
+            
+            // Add hover effect to method cards
+            const methodCards = document.querySelectorAll('.method-card');
+            methodCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
